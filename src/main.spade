@@ -1,3 +1,9 @@
-entity main() -> int<8> {
-    0
+//! An FFT kernel for practice.
+
+mod complex;
+
+/// TODO
+#[no_mangle(all)]
+entity ffi() {
+
 }

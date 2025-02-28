@@ -1,2 +1,5 @@
+[libraries.fixed]
+commit = "42290b5c59efe64ae86b14b73a1cb965e62835a8"
+
 [spade]
-commit = "4cc48fe55dbd68bcd654137d489a392661f142d0"
+commit = "d1bd3c48c01c399492a40707589532f8fc9f1a9f"

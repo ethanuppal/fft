@@ -1,1 +1,13 @@
 name = "fft"
+description = "FFT kernel in Spade"
+version = "0.1.0"
+authors = ["Ethan Uppal"]
+readme = "README.md"
+license = "MPL-2.0"
+license-file = "LICENSE"
+
+[libraries]
+fixed = { git = "https://gitlab.com/spade-lang/lib/fixed", commit = "42290b5c59efe64ae86b14b73a1cb965e62835a8" }
+
+[plugins.marlin]
+path = "plugins/marlin"

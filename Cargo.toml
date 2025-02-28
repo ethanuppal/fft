@@ -1,0 +1,7 @@
+[package]
+name = "fft_tests"
+edition = "2021"
+
+[dependencies]
+marlin = { version = "0.2.1", features = ["spade"] }
+snafu = "0.8.5"

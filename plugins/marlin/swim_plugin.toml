@@ -1,0 +1,3 @@
+[commands.marlin]
+script = ["cargo test"]
+after = "SpadeBuild"
