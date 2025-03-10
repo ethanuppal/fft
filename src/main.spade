@@ -2,8 +2,54 @@
 
 mod complex;
 
-/// TODO
-#[no_mangle(all)]
-entity ffi() {
+use complex::Complex;
+use complex::complex_from_ints;
+use fixed::Fp;
 
+// struct port Port<#uint Width, T> {
+//     addr: inv &uint<Width>,
+//     read: &T
+// }
+//
+// pipeline(0) recursive_fft<#uint N, #uint PortWidth, #uint FloatWidth, #uint FloatFracBits>(
+//     clk: clock, 
+//     twiddle_port: Port<PortWidth, Complex<FloatWidth, FloatFracBits>>,
+//     input: [Complex<FloatWidth, FloatFracBits>],
+//     output: inv &[Complex<FloatWidth, FloatFracBits>]
+// ) where PortWidth: {uint_bits_to_fit(N)} /* should not need to do this */ {
+//     gen if N == 1 {
+//
+//     } else {
+//
+//     }
+//    // inst({N / 2})
+//    // inst({N / 2})
+// }
+
+// entity fft() {}
+
+entity fft4(
+    inputs: [Complex<32, 16>; 4]
+) -> [Complex<32, 16>; 4] {
+    let twiddle = [
+        complex_from_ints(1, 0),
+        complex_from_ints(0, 1),
+        complex_from_ints(-1, 0),
+        complex_from_ints(0, -1),
+    ];
+
+    twiddle
+}
+
+#[no_mangle(all)]
+entity fft4_th(
+    re_parts: [Fp<32, 16>; 4],
+    im_parts: [Fp<32, 16>; 4],
+    re_parts_inv: inv &[Fp<32, 16>; 4],
+    im_parts_inv: inv &[Fp<32, 16>; 4]) {
+    let inputs = complex::array_from_parts(re_parts, im_parts);
+    let outputs = inst fft4(inputs);
+    let (re_parts_out, im_parts_out) = complex::array_to_parts(outputs);
+    set re_parts_inv = re_parts_out;
+    set im_parts_inv = im_parts_out;
 }

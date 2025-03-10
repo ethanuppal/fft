@@ -1,1 +1,51 @@
 //! Implements complex numbers using fixed point arithmetic.
+
+use std::conv;
+
+use fixed::Fp;
+
+struct Complex<#uint Width, #uint FracBits> {
+    re: Fp<Width, FracBits>,
+    im: Fp<Width, FracBits>
+}
+
+// TODO: remove these two functions once Marlin supports Spade structs
+
+fn array_from_parts<#uint Width, #uint FracBits, #uint Length>(
+    re_parts: [Fp<Width, FracBits>; Length],
+    im_parts: [Fp<Width, FracBits>; Length]
+) -> [Complex<Width, FracBits>; Length] {
+    gen if Length == 1 {
+        [Complex(re_parts[0], im_parts[0])]
+    } else {
+        conv::concat_arrays(
+            array_from_parts(re_parts[0..Length/2], im_parts[0..Length/2]),
+            array_from_parts(re_parts[Length/2..Length], im_parts[Length/2..Length])
+        )
+    }
+}
+
+fn array_to_parts<#uint Width, #uint FracBits, #uint Length>(
+    packed: [Complex<Width, FracBits>; Length]
+) -> (
+    [Fp<Width, FracBits>; Length],
+    [Fp<Width, FracBits>; Length]
+) {
+    gen if Length == 1 {
+        ([packed[0].re], [packed[0].im])
+    } else {
+        let (left_re_parts, left_im_parts) = array_to_parts(packed[0..Length/2]);
+        let (right_re_parts, right_im_parts) = array_to_parts(packed[Length/2..Length]);
+        (
+            conv::concat_arrays(left_re_parts, right_re_parts),
+            conv::concat_arrays(right_re_parts, right_im_parts)
+        )
+    }
+}
+
+fn complex_from_ints<#uint Width, #uint FracBits>(
+    re: int<{Width - FracBits}>,
+    im: int<{Width - FracBits}>
+) -> Complex<Width, FracBits> {
+    Complex$(re: Fp(re << FracBits), im: Fp(im << FracBits))
+}
